@@ -8,3 +8,4 @@ export { createPoint } from './point';
 export { createThreshold } from './threshold';
 export { createQuantize } from './quantize';
 export { createQuantile } from './quantile';
+export { createTime } from './time';
