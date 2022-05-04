@@ -18,3 +18,7 @@ export function nice(domain, interval) {
 export function normalize(value, start, stop) {
   return (value - start) / (stop - start);// 可以理解为,从 0 跑到 1 的完成率
 }
+
+export function log(n, base) {
+  return Math.log(n) / Math.log(base);
+}
