@@ -7,3 +7,4 @@ export { createOrdinal } from './ordinal';
 export { createPoint } from './point';
 export { createThreshold } from './threshold';
 export { createQuantize } from './quantize';
+export { createQuantile } from './quantile';
