@@ -3,3 +3,4 @@ export { createIdentity } from './identity';
 export { createLinear } from './linear';
 export { interpolateNumber, interpolateColor } from './interpolate';
 export { createLog } from './log';
+export { createOrdinal } from './ordinal';

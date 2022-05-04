@@ -30,14 +30,14 @@ describe('createLog', () => {
   });
 
   test('scale.nice(base) extends domain for better ticks.', () => {
-    expect(nice([10, 50], [8, 64], 2)).toBeTruthy();
-    expect(nice([10, 50], [9, 81], 3)).toBeTruthy();
-    expect(nice([10, 50], [4, 64], 4)).toBeTruthy();
-    expect(nice([10, 50], [5, 125], 5)).toBeTruthy();
+    expect(nice([10, 50], [8, 64], 2)).toBeTruthy();//  5.6 => 6
+    expect(nice([10, 50], [9, 81], 3)).toBeTruthy();//  3.6 => 4
+    expect(nice([10, 50], [4, 64], 4)).toBeTruthy();//  2.8 => 3
+    expect(nice([10, 50], [5, 125], 5)).toBeTruthy();// 2.4 => 3
   });
 
   test('scale.ticks(tickCount) returns ticks in base ^ n format.', () => {
-    expect(ticks([10, 100], 2, 5)).toEqual([8, 16, 32, 64, 128]);
+    expect(ticks([10, 100], 2, 5)).toEqual([8, 16, 32, 64, 128]);// 2^3 2^4 2^5 2^6...
     expect(ticks([1, 1e5], 10, 5)).toEqual([1, 10, 100, 1000, 10000, 100000]);
   });
 });
