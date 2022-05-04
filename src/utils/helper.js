@@ -22,3 +22,7 @@ export function normalize(value, start, stop) {
 export function log(n, base) {
   return Math.log(n) / Math.log(base);
 }
+
+export function identity(x) {
+  return x;
+}

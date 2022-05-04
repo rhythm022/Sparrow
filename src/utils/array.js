@@ -1,4 +1,4 @@
-import { round } from './helper';
+import { round, identity } from './helper';
 
 const e10 = Math.sqrt(50); // 7.07
 const e5 = Math.sqrt(10); // 3.16
@@ -38,4 +38,19 @@ export function ticks(min, max, count) {
     values[i] = round(start * step + i * step); // 第一个 tick 是 start * step
   }
   return values;//
+}
+
+export function bisect(array, x, lo = 0, hi = array.length, accessor = identity) {
+  let i = lo;
+  let j = hi;
+  while (i < j) {
+    const mid = (i + j) >>> 1;
+    if (accessor(array[mid]) < x) { // 找到第一个大于等于 x 的位置
+      i = mid + 1;
+    } else {
+      j = mid;
+    }
+  }
+
+  return i === array.length ? -1 : i;
 }
