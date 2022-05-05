@@ -26,3 +26,16 @@ export function log(n, base) {
 export function identity(x) {
   return x;
 }
+
+export function compose(...fns) { // compose === pipe
+  return fns.reduce((total, cur) => (x) => cur(total(x)), identity); // I like
+}
+
+export function curry(fn) { // 分步传参 + 传参单值化
+  const arity = fn.length;
+  return function curried(...args) {
+    const newArgs = args.length === 0 ? [undefined] : args;
+    if (newArgs.length >= arity) return fn(...newArgs);
+    return curried.bind(null, ...newArgs);
+  };
+}

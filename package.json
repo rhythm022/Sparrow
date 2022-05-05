@@ -6,7 +6,7 @@
   "scripts": {
     "lint": "eslint --fix",
     "test": "jest --coverage",
-    "test-one": "DEBUG_MODE=1 npx jest __tests__/scale/time.spec.js",
+    "test-one": "DEBUG_MODE=1 npx jest __tests__/coordinate/cartesian.spec.js",
     "test-live": "cross-env DEBUG_MODE=1 jest --coverage",
     "build": "rimraf -rf ./dist ./lib ./esm && rollup --config",
     "prepare": "husky install",
