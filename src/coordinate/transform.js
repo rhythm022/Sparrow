@@ -22,3 +22,11 @@ export function reflectY() {
 export function transpose() { // x 的值映射到 y 通道. y 的值映射到 x 通道
   return transform('transpose', ([px, py]) => [py, px]);
 }
+
+export function polar() {
+  return transform('polar', ([theta, radius]) => {
+    const x = radius * Math.cos(theta);
+    const y = radius * Math.sin(theta);
+    return [x, y];
+  });
+}

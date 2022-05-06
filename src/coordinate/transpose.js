@@ -9,20 +9,21 @@ import {
 
 // eslint-disable-next-line no-unused-vars
 function coordinate(transformOptions, canvasOptions) {
-/*
-    return [
-        transposeT(),
-        translate(-0.5, -0.5),
-        reflectX(),
-        translate(0.5, 0.5),
-    ];
+  return [
+    transposeT(),
+    translate(-0.5, 0),
+    reflectX(),
+    translate(0.5, 0),
+  ];
 
-*/
+/*
   return [
     transposeT(),
     reflectX(), // 因为 y 映射到了 x 通道, 所以, 反射 x 能使 y 反向
     translate(1, 0), // 因为 y 映射到了 x 通道, 所以, 平移 x 能使 y 平移
   ];
+
+*/
 }
 
 export const transpose = curry(coordinate);
