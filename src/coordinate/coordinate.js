@@ -1,3 +1,13 @@
+/*
+    createCoordinate 是工厂,具体 transforms 实现在每个 coordinate 里
+
+    创建坐标系时, 传入 x y width height 信息
+
+    调用坐标系时, 规定坐标系接受归一化的 [0,0] 到 [1,1] 范围的点
+
+    坐标系用于决定样本的位置通道 x y
+*/
+
 import { compose } from '../utils';
 
 export function createCoordinate({

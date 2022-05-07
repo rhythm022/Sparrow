@@ -1,0 +1,1 @@
+export { point } from './point';
