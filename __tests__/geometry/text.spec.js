@@ -4,7 +4,7 @@ import { plot } from './utils';
 describe('text', () => {
   test('text has expected defaults', () => {
     const channels = text.channels();
-    expect(channels).toEqual({
+    expect(channels).toEqual({ // text 就是一个复杂的 point
       x: { name: 'x', optional: false },
       y: { name: 'y', optional: false },
       text: { name: 'text', optional: false, scale: 'identity' },
