@@ -23,7 +23,7 @@ export function createCoordinate({
   } = canvasOptions;
 
   output.isPolar = () => types.indexOf('polar') !== -1;
-  output.isTranspose = () => types.reduce((is, type) => is ^ (type === 'transpose'), false); // 666
+  output.isTranspose = () => types.reduce((is, type) => is ^ (type === 'transpose'), false); // 两次转置等于没转
   output.center = () => [x + width / 2, y + height / 2];
 
   return output;

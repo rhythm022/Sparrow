@@ -1,5 +1,6 @@
-import { line as pathLine, area as pathArea } from './d';
-import { contour } from './primitive';
+import { line as pathLine, area as pathArea, sector as pathSector } from './d';
+import { contour, ring } from './primitive';
+import { dist, sub, equal } from '../utils';
 
 export function circle(renderer, coordinate, {
   cx, cy, r, ...styles
@@ -55,4 +56,39 @@ export function area(renderer, coordinate, {
     return contour(renderer, { points, ...styles });
   }
   return renderer.path({ d: pathArea(points), ...styles });
+}
+
+export function rect(renderer, coordinate, {
+  x1, y1, x2, y2, ...styles
+}) {
+  const v0 = [x1, y1];// 传统意义的左上   [ 0.5, 0.5 ]
+  const v1 = [x2, y1];// 传统意义的右上   [   1, 0.5 ]
+  const v2 = [x2, y2];// 传统意义的右下   [   1,   1 ]
+  const v3 = [x1, y2];// 传统意义的左下   [ 0.5,   1 ]
+
+  const vs = coordinate.isTranspose() ? [v3, v0, v1, v2] : [v0, v1, v2, v3];
+  const ps = vs.map(coordinate);
+  const [p0, p1, p2, p3] = ps;
+
+  // 绘制矩形
+  if (!coordinate.isPolar()) {
+    const [width, height] = sub(p2, p0);// 左上 减 右下
+    const [x, y] = p0;
+    return renderer.rect({
+      x, y, width, height, ...styles,
+    });
+  }
+
+  const center = coordinate.center();
+  const [cx, cy] = center;
+  // 绘制扇形
+  if (!(equal(p0, p1) && equal(p2, p3))) {
+    return renderer.path({ d: pathSector([center, ...ps]), ...styles });
+  }
+  // 绘制整圆
+  const r1 = dist(center, p2);
+  const r2 = dist(center, p0);
+  return ring(renderer, {
+    cx, cy, r1, r2, ...styles,
+  });
 }
