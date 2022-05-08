@@ -4,3 +4,10 @@ export function line([p0, ...points]) {
     ...points.map((p) => ['L', ...p]),
   ];
 }
+
+export function area(points) {
+  return [
+    ...line(points), // I like
+    ['Z'],
+  ];
+}
