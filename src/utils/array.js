@@ -54,3 +54,31 @@ export function bisect(array, x, lo = 0, hi = array.length, accessor = identity)
 
   return i === array.length ? -1 : i;
 }
+
+/*
+
+    根据对象自身或外部的特征
+
+    将对象分组
+
+    * const array = [
+    *   {name:'a', value: 1},
+    *   {name:'a', value: 2},
+    *   {name:'b', value: 3}
+    * ]
+    * const groups = group(array, d => d.name);
+    * // Map(2) {'a' => [{name: 'a', value:1}, {name: 'a', value: 2}], 'b' => [{name: 'b', value: 3}]}
+*/
+export function group(array, key = (d) => d) {
+  const keyGroups = new Map();
+  for (const item of array) {
+    const k = key(item);
+    const g = keyGroups.get(k);
+    if (g) {
+      g.push(item);
+    } else {
+      keyGroups.set(k, [item]);
+    }
+  }
+  return keyGroups;
+}

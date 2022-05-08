@@ -27,5 +27,6 @@ module.exports = {
     'no-bitwise': 0,
     // 'object-curly-newline': 0,
     radix: 0,
+    'max-len': 0,
   },
 };

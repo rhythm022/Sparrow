@@ -1,3 +1,5 @@
+import { line as pathLine } from './d';
+
 export function circle(renderer, coordinate, {
   cx, cy, r, ...styles
 }) {
@@ -28,4 +30,13 @@ export function link(renderer, coordinate, {
   return renderer.line({
     x1: p0[0], y1: p0[1], x2: p1[0], y2: p1[1], ...styles,
   });
+}
+
+export function line(renderer, coordinate, {
+  X, Y, I: I0, ...styles
+}) {
+  const I = coordinate.isPolar() ? [...I0, I0[0]] : I0; // 极坐标系下这条线需要闭合
+  const points = I.map((i) => coordinate([X[i], Y[i]]));
+  const d = pathLine(points);
+  return renderer.path({ d, ...styles });
 }
