@@ -1,3 +1,6 @@
+/*
+    scale 的输入是 domin 里的值, 是某个通道里的值
+*/
 export { createBand } from './band';
 export { createIdentity } from './identity';
 export { createLinear } from './linear';
