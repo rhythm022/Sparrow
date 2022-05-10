@@ -92,3 +92,7 @@ export function rect(renderer, coordinate, {
     cx, cy, r1, r2, ...styles,
   });
 }
+
+export function path(renderer, coordinate, attributes) {
+  return renderer.path(attributes);
+}

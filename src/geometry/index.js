@@ -6,3 +6,4 @@ export { area } from './area';
 export { rect } from './rect';
 export { cell } from './cell';
 export { interval } from './interval';
+export { path } from './path';
