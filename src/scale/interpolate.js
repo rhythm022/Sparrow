@@ -1,5 +1,5 @@
 export function interpolateNumber(t, start, stop) {
-  return start + (stop - start) * t;
+  return start + (stop - start) * t;// t 是完成率
 }
 
 export function interpolateColor(t, d0, d1) {

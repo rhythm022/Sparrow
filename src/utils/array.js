@@ -82,3 +82,11 @@ export function group(array, key = (d) => d) {
   }
   return keyGroups;
 }
+
+export function lastOf(array) {
+  return array[array.length - 1];
+}
+
+export function firstOf(array) {
+  return array[0];
+}

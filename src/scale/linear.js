@@ -12,7 +12,7 @@ export function createLinear({
     const t = normalize(x, d0, d1);// 假如 nice 过,以拓展后的新作用域做归一化然后映射值域
     return interpolate(t, r0, r1);
   };
-
+  // 比例尺的 ticks 是 domin 的刻度列表
   scale.ticks = (tickCount = 10) => ticks(d0, d1, tickCount);// 2. 新作用域的新 tickStep 间隔可能变大
   scale.nice = (tickCount = 10) => { // nice === 拓展作用域
     if (d0 === d1) return;
