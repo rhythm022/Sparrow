@@ -59,3 +59,16 @@ function rotationOf(center, [x, y]) {
   const textRotation = tickRotation < 0 ? Math.PI : 0;
   return { tickRotation: tickRotation - Math.PI / 2, textRotation };
 }
+
+export function ticksTop(renderer, ticks, { tickLength, fontSize }) {
+  for (const { x, y, text } of ticks) {
+    const x2 = x;
+    const y2 = y - tickLength;
+    renderer.line({
+      x1: x, y1: y, x2, y2, stroke: 'currentColor', class: 'tick',
+    });
+    renderer.text({
+      text, fontSize, x, y: y2, textAnchor: 'middle', dy: '-0.3em', class: 'text',
+    });
+  }
+}
