@@ -90,3 +90,11 @@ export function lastOf(array) {
 export function firstOf(array) {
   return array[0];
 }
+
+export function min(array, accessor) {
+  return Math.min(...array.map(accessor));
+}
+
+export function max(array, accessor) {
+  return Math.max(...array.map(accessor));
+}
