@@ -96,7 +96,7 @@ describe('area', () => {
   test('radar with background', () => {
     plot({
       geometry: area,
-      index: [0, 1, 2, 3, 4, 5, 6, 7],
+      index: [0, 1, 2, 3],
       scales: {},
       styles: {
         stroke: 'black',
@@ -109,8 +109,8 @@ describe('area', () => {
         cartesian(),
       ],
       channels: {
-        stroke: ['#5B8FF9', '#5B8FF9', '#5B8FF9', '#5B8FF9', '#F6BD16', '#F6BD16', '#F6BD16', '#F6BD16'],
-        fill: ['#5B8FF9', '#5B8FF9', '#5B8FF9', '#5B8FF9', '#F6BD16', '#F6BD16', '#F6BD16', '#F6BD16'],
+        stroke: ['#5B8FF9', '#5B8FF9', '#5B8FF9', '#5B8FF9'],
+        fill: ['#5B8FF9', '#5B8FF9', '#5B8FF9', '#5B8FF9'],
         x: [0, 0.25, 0.5, 0.75],
         x1: [0, 0.25, 0.5, 0.75],
         y: [0.2, 0.1, 0.9, 0.2],

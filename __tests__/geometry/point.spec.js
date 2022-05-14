@@ -64,7 +64,7 @@ describe('point', () => {
   test('bubble in polar', () => {
     plot({
       geometry: point,
-      index: [0, 1, 2, 3],
+      index: [0, 1, 2],
       scales: {},
       styles: {
         fillOpacity: 0.5,
