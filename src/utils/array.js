@@ -98,3 +98,7 @@ export function min(array, accessor) {
 export function max(array, accessor) {
   return Math.max(...array.map(accessor));
 }
+
+export function indexOf(array) {
+  return array.map((_, i) => i);
+}

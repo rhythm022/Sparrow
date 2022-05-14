@@ -39,3 +39,20 @@ export function curry(fn) { // 分步传参 + 传参单值化
     return curried.bind(null, ...newArgs);
   };
 }
+
+export function map(object, transform = identity) {
+  return Object.entries(object).reduce((obj, [key, value]) => {
+    obj[key] = transform(value, key);
+    return obj;
+  }, {});
+}
+
+export function assignDefined(target, source) {
+  for (const [key, value] of Object.entries(source)) {
+    if (value !== undefined) target[key] = value;
+  }
+}
+
+export function defined(d) {
+  return d !== undefined && !Number.isNaN(d);
+}

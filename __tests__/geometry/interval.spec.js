@@ -80,7 +80,7 @@ describe('interval', () => {
     });
   });
 
-  test.only('group column for z channels', () => {
+  test('group column for z channels', () => {
     plot({
       geometry: interval,
       index: [0, 1, 2, 3, 4, 5],
