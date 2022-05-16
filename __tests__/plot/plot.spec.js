@@ -15,7 +15,7 @@ import {
 } from './data';
 
 describe('plot', () => {
-  test('interval with field encoding', () => {
+  test.only('interval with field encoding', () => {
     const chart = sp.plot({
       type: 'interval',
       data: sports,
@@ -100,7 +100,7 @@ describe('plot', () => {
       },
       statistics: [{ type: 'stackY' }],
       scales: {
-        x: { padding: 0 },
+        x: { padding: 0 }, // interval 的 x 通道必须使用 band 比例尺，所以有 padding 属性
       },
       coordinates: [{ type: 'transpose' }, { type: 'polar' }],
       guides: {

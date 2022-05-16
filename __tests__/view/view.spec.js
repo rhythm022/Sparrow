@@ -17,6 +17,7 @@ describe('createViews', () => {
   test('basic container', () => {
     const views = createViews({});// 没有子节点
     renderViews(views);
+    console.log('basic container', views);
 
     expect(views.length).toBe(1);
     const [[view, [node]]] = views;
@@ -32,6 +33,7 @@ describe('createViews', () => {
       children: [{}, {}], // 两个子节点以图层方式排列
     });
     renderViews(views);
+    console.log('layer container', views);// 返回一个 view, 父子 node 在同一个 view
 
     expect(views.length).toBe(1);
     const [[view, nodes]] = views;
@@ -47,6 +49,8 @@ describe('createViews', () => {
       children: [{}, {}], // 两个子节点以行方式排列
     });
     renderViews(views);
+    console.log('row container', views);// 返回三个 view, 三个 node 在三个 view
+
     expect(views.length).toBe(3);
 
     const [, [view, [node]]] = views;
@@ -66,6 +70,7 @@ describe('createViews', () => {
       ],
     });
     renderViews(views);
+    console.log('col container', views);
 
     expect(views.length).toBe(4);
 
@@ -78,13 +83,14 @@ describe('createViews', () => {
 
   test('flex container', () => {
     const views = createViews({
-      type: 'row',
+      type: 'row', // 1
       children: [
-        {},
-        { type: 'col', children: [{}, {}] },
+        {}, // 2
+        { type: 'col'/* 3 */, children: [{}, {}] }, // 4 5
       ],
     });
     renderViews(views);
+    console.log('flex container', views);// 5 个 view
 
     expect(views.length).toBe(5);
     const [, , , [view, [node]]] = views;
@@ -110,7 +116,7 @@ describe('createViews', () => {
       children: [{}],
     });
     renderViews(views);
-    console.log('facet container with specified x', views);
+    console.log('facet container with specified x', views);// 1 + 2 个 view
 
     expect(views.length).toBe(3);
     const [, [view, [node]]] = views;
@@ -141,7 +147,7 @@ describe('createViews', () => {
       children: [{}, {}],
     });
     renderViews(views);
-    console.log('facet container with specified y', views);
+    console.log('facet container with specified y', views);// 1 + 3 个 view
 
     expect(views.length).toBe(4);
     const [, [view, [node]]] = views;
@@ -174,7 +180,7 @@ describe('createViews', () => {
       children: [{}, {}],
     });
     renderViews(views);
-    console.log('facet container', views);
+    console.log('facet container', views);// 1 + 6 个 view
 
     expect(views.length).toBe(7);
     const [, [view, [node]]] = views;
