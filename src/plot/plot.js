@@ -44,7 +44,7 @@ export function plot(root) {
     let coordinates = [];
     const chartNodes = nodes.filter(({ type }) => isChartNode(type));
 
-    for (const options of chartNodes) { // 分离出区域配置和 chartNodes/geometry 配置 // 只有 layer facet 会出现多 chartNodes 的可能
+    for (const options of chartNodes) { // 分离出区域配置和 chartNodes/geometry 配置 // 只有 layer facet 会出现一个区域多 geometry 的可能
       const {
         scales: s = {},
         guides: g = {},
@@ -60,7 +60,7 @@ export function plot(root) {
       assignDefined(guides, g);
       if (c) coordinates = c;
 
-      geometries.push({ ...geometry, transforms: [transform, ...transforms] });// geometry 配置(data,encodings,statistics,styles)
+      geometries.push({ ...geometry, transforms: [transform, ...transforms] });// geometry 配置(type,encodings,data,transforms,statistics,styles)
     }
     plotView({
       // 绘制区域
@@ -85,16 +85,17 @@ function plotView({
   width, height, x, y,
   paddingLeft = 45, paddingRight = 45, paddingBottom = 45, paddingTop = 65,
 }) {
-  // 获得每个通道值
+  // 区域的 geometry
   const geometries = geometriesOptions.map(initialize);
-  const channels = geometries.map((d) => d.channels);
-  const scaleDescriptors = inferScales(channels, scalesOptions);
-  const guidesDescriptors = inferGuides(scaleDescriptors, { x, y, paddingLeft }, guidesOptions);
 
-  // 推断 scales guides
+  const channels = geometries.map((d) => d.channels);
+  // scales
+  const scaleDescriptors = inferScales(channels, scalesOptions);
   const scales = map(scaleDescriptors, create);
+  // guides
+  const guidesDescriptors = inferGuides(scaleDescriptors, { x, y, paddingLeft }, guidesOptions);
   const guides = map(guidesDescriptors, create);
-  // 生成 scales guides
+  // coordinate
   const transforms = inferCoordinates(coordinateOptions).map(create);
   const coordinate = createCoordinate({
     x: x + paddingLeft,
@@ -104,6 +105,7 @@ function plotView({
     transforms,
   });
 
+  // 绘制
   // 绘制辅助组件
   for (const [key, guide] of Object.entries(guides)) {
     const scale = scales[key];

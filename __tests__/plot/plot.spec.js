@@ -15,7 +15,7 @@ import {
 } from './data';
 
 describe('plot', () => {
-  test.only('interval with field encoding', () => {
+  test('interval with field encoding', () => {
     const chart = sp.plot({
       type: 'interval',
       data: sports,

@@ -21,8 +21,15 @@ import {
   createBinX, createNormalizeY, createSymmetryY, createStackY,
 } from '../statistic';
 
+// 接受
+// transformsOptions
+// chartNodes/geometries
+// statisticsOptions
+// coordinateOptions
+// scaleDescriptors
+// guidesDescriptors
 export function create(options) {
-  if (typeof options === 'function') return options;
+  if (typeof options === 'function') return options;// transformsOptions
   const { type, ...rest } = options;
 
   // geometries
@@ -36,7 +43,7 @@ export function create(options) {
   if (type === 'point') return point;
   if (type === 'path') return path;
 
-  // facet
+  // facet chartNodes
   if (type === 'facet') {
     const facet = () => {};
     facet.channels = () => ({
@@ -46,18 +53,18 @@ export function create(options) {
     return facet;
   }
 
-  // statistics
+  // statisticsOptions
   if (type === 'stackY') return createStackY(rest);
   if (type === 'normalizeY') return createNormalizeY(rest);
   if (type === 'symmetryY') return createSymmetryY(rest);
   if (type === 'binX') return createBinX(rest);
 
-  // coordinates
+  // coordinateOptions
   if (type === 'cartesian') return cartesian(rest);
   if (type === 'transpose') return transpose(rest);
   if (type === 'polar') return polar(rest);
 
-  // scales
+  // scaleDescriptors
   if (type === 'band') return createBand(rest);
   if (type === 'linear') return createScaleQ(createLinear, rest);
   if (type === 'time') return createScaleQ(createTime, rest);
@@ -69,7 +76,7 @@ export function create(options) {
   if (type === 'quantize') return createQuantize(rest);
   if (type === 'threshold') return createThreshold(rest);
 
-  // guides
+  // guidesDescriptors
   if (type === 'axisX') return createGuide(axisX, rest);
   if (type === 'axisY') return createGuide(axisY, rest);
   if (type === 'legendSwatches') return createGuide(legendSwatches, rest);

@@ -2,36 +2,34 @@ import { compose, indexOf } from '../utils';
 import { inferEncodings, valueOf } from './encoding';
 import { create } from './create';
 
-export function initialize({
-  data,
+export function initialize({ // 确定 type 类型的 geometry
   type,
   encodings: E = {},
   statistics: statisticsOptions = [],
+  data,
   transforms: transformsOptions = [],
   styles,
 }) {
-  // apply transform
-  const transform = compose(...transformsOptions.map(create));
-  const transformedData = transform(data);
-  const index = indexOf(transformedData);
-
-  // apply valueOf
-  const encodings = inferEncodings(type, transformedData, E);
+  // transform
+  const transform = compose(...transformsOptions.map(create));// 预处理
+  const transformedData = transform(data);// apply
+  // encodings
+  const encodings = inferEncodings(type, transformedData, E);// 预处理 (完善补全配置)
   const constants = {};
   const values = {};
   for (const [key, e] of Object.entries(encodings)) {
     if (e) {
       const { type, value } = e;
-      if (type === 'constant') constants[key] = value;
-      else values[key] = valueOf(transformedData, e);
+      if (type === 'constant') constants[key] = value;// fill stroke 的 value 类型就是 constant 类型
+      else values[key] = valueOf(transformedData, e);// apply (得到各个通道的值 === 得到 geometry 实体)
     }
   }
+  // statistic
+  const index = indexOf(transformedData);
+  const statistic = compose(...statisticsOptions.map(create));// 预处理 (初始化 statistic)
+  const { values: transformedValues, index: I } = statistic({ index, values });// apply (调整各个通道的值 === 调整 geometry 实体)
 
-  // apply statistics
-  const statistic = compose(...statisticsOptions.map(create));
-  const { values: transformedValues, index: I } = statistic({ index, values });
-
-  // create channels
+  // 以上的逻辑是算出 values
   const geometry = create({ type });
   const channels = {};
   for (const [key, channel] of Object.entries(geometry.channels())) {
@@ -44,7 +42,7 @@ export function initialize({
     }
   }
 
-  return {
+  return { // 返回用于绘制的 geometry 和包含绘制数据的 channels, index
     index: I, geometry, channels, styles: { ...styles, ...constants },
   };
 }
@@ -53,7 +51,7 @@ function createChannel(channel, values, encoding = {}) {
   const { type, value } = encoding;
   return {
     ...channel,
-    ...(type === 'field' && { field: value }),
+    ...(type === 'field' && { field: value }), // 只有 field 编码的通道, 才带上用户传入的原始编码配置.
     values,
   };
 }
