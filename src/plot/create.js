@@ -71,7 +71,7 @@ export function create(options) {
   if (type === 'log') return createScaleQ(createLog, rest);
   if (type === 'identity') return createIdentity(rest);
   if (type === 'ordinal') return createOrdinal(rest);
-  if (type === 'dot') return createPoint(rest);
+  if (type === 'dot') return createPoint(rest);// dot === point
   if (type === 'quantile') return createQuantile(rest);
   if (type === 'quantize') return createQuantize(rest);
   if (type === 'threshold') return createThreshold(rest);
@@ -89,9 +89,11 @@ function createGuide(guide, options) {
   return (renderer, scale, coordinate) => guide(renderer, scale, coordinate, options);
 }
 
-function createScaleQ(ctor, options) {
-  const { nice = true, tickCount = 10 } = options;
+function createScaleQ(ctor, options) { // 默认 nice 一下
   const scale = ctor(options);
+
+  const { nice = true, tickCount = 10 } = options;
   if (nice) scale.nice(tickCount);
+
   return scale;
 }

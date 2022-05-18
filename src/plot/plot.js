@@ -89,9 +89,9 @@ function plotView({
   const geometries = geometriesOptions.map(initialize);
 
   const channels = geometries.map((d) => d.channels);
-  // scales
-  const scaleDescriptors = inferScales(channels, scalesOptions);
-  const scales = map(scaleDescriptors, create);
+  // scales // geometry 实体被绘制之前, 会先经过 scale
+  const scaleDescriptors = inferScales(channels, scalesOptions);// scaleDescriptors 是以通道组名为 key, 以 scaleDescriptor 为 value 的对象
+  const scales = map(scaleDescriptors, create);// 为每个通道创建 scale 器
   // guides
   const guidesDescriptors = inferGuides(scaleDescriptors, { x, y, paddingLeft }, guidesOptions);
   const guides = map(guidesDescriptors, create);

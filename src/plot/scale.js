@@ -1,26 +1,34 @@
+/*
+  创建比例尺三个比较重要的职责：
+  补全比例尺类型
+  补全定义域
+  补全值域
+*/
+
 import {
   firstOf, group, lastOf, map, defined,
 } from '../utils';
 import { interpolateColor, interpolateNumber } from '../scale';
 import { categoricalColors, ordinalColors } from './theme';
 
-export function inferScales(channels, options) {
-  const scaleChannels = group(channels.flatMap(Object.entries), ([name]) => scaleName(name));
+export function inferScales(channels, options) { // channels 是不同实体的通道对象的列表. 除了 layer facet, 列表中都是只有一个对象.
+  const scaleChannels = group(channels.flatMap(Object.entries), ([name]) => scaleName(name));// name === 通道名 // 预处理: 把 x x1 / y y1 / fill stroke 分为一组
   const scales = {};
-  for (const [name, channels] of scaleChannels) {
-    const channel = mergeChannels(name, channels);
-    const o = options[name] || {};
-    const type = inferScaleType(channel, o);
+  for (const [name, channels] of scaleChannels) { // name === 'x' | 'y' | 'color' | 'z' 组名...
+    const channel = mergeChannels(name, channels);// 预处理: 把比如 x x1 的 values scale 等合并. 如果是 z 通道, 并不改变什么.
+    const o = options[name] || {};// 用户能传入 padding nice zero label type domin range interpolate 等配置项
+    const type = inferScaleType(channel, o);// 用户指定的 domin 很长或其中含有字符串, 就可判定为 'ordinal' 比例尺, 否则 'linear' 比例尺居多.
     scales[name] = {
-      ...o,
-      ...inferScaleOptions(type, channel, o),
-      domain: inferScaleDomain(type, channel, o),
-      range: inferScaleRange(type, channel, o),
-      label: inferScaleLabel(type, channel, o),
       type,
+      ...o, // 用户传入的配置
+      domain: inferScaleDomain(type, channel, o), // 根据比例尺定义域是连续的还是离散的, 把通道值作为定义域
+      range: inferScaleRange(type, channel, o), // 根据比例尺值域是连续的还是离散的, 值域默认为 0 到 1 或那几个颜色
+      ...inferScaleOptions(type, channel, o), // 补全该类型比例尺所需的特殊配置比如 interpolate 函数
+      label: inferScaleLabel(type, channel, o), // 用户指定的 field 作为 label
     };
   }
-  return scales;
+
+  return scales;// 返回 geometry 实体各通道组对应的比例尺类型/比例尺作用域值域/比例尺 label
 }
 
 export function applyScales(channels, scales) {
@@ -37,30 +45,30 @@ function scaleName(name) {
   return name;
 }
 
-function mergeChannels(name, channels) {
+function mergeChannels(name, channels) { // merge 比如 stroke 通道和 fill 通道
   const values = [];
   let scale;
   let field;
   for (const [, { values: v = [], scale: s, field: f }] of channels) {
-    values.push(...v);
-    if (!scale && s) scale = s;
-    if (!field && f) field = f;
+    values.push(...v);// 通道值连在一起, 用于接下来确定比例尺的作用域
+    if (!scale && s) scale = s;// stroke fill 有一个 scale, color 就有 scale(即 stroke fill 共用一个比例尺)
+    if (!field && f) field = f;// 同样
   }
   return {
     name, scale, values, field,
   };
 }
 
-function inferScaleType({ name, scale, values }, { type, domain, range }) {
-  if (scale) return scale;
-  if (type) return type;
-  if ((domain || range || []).length > 2) return asOrdinalType(name);
+function inferScaleType({ name, scale, values }, { type, domain, range }) { // name === 组名
+  if (scale) return scale;// 通道有要求(比如 interval 的 x 通道只能是 band scale)
+  if (type) return type;// 用户有直接指定
+  if ((domain || range || []).length > 2) return asOrdinalType(name);// 用户指定的 domain(或 range)长度超过 2, 则间接肯定不是连续比例尺, 是离散比例尺 'dot' | 'ordinal'
   if (domain !== undefined) {
-    if (isOrdinal(domain)) return asOrdinalType(name);
+    if (isOrdinal(domain)) return asOrdinalType(name);// 用户指定的 domain 里有 string boolean, 间接确定是离散比例尺 'dot' | 'ordinal'
     if (isTemporal(domain)) return 'time';
     return 'linear';
   }
-  if (isOrdinal(values)) return asOrdinalType(name);
+  if (isOrdinal(values)) return asOrdinalType(name);// 用户没有指定 type 和 domain, 就根据实际通道值判断
   if (isTemporal(values)) return 'time';
   if (isUnique(values)) return 'identity';
   return 'linear';
@@ -72,13 +80,13 @@ function inferScaleDomain(type, { values }, { domain, ...options }) {
     case 'linear':
     case 'log':
     case 'quantize':
-      return inferDomainQ(values, options);
+      return inferDomainQ(values, options);// 连续的 domin: 取通道值上下限
     case 'ordinal':
     case 'dot':
     case 'band':
-      return inferDomainC(values, options);
+      return inferDomainC(values, options);// 离散的 domin: 通道值去重
     case 'quantile':
-      return inferDomainO(values, options);
+      return inferDomainO(values, options);// 离散的 domin: 通道值去重排序
     case 'time':
       return inferDomainT(values, options);
     default:
@@ -94,13 +102,13 @@ function inferScaleRange(type, { name }, { range }) {
     case 'time':
     case 'band':
     case 'dot':
-      return inferRangeQ(name);
+      return inferRangeQ(name);// 连续的 range: 0 到 1
     case 'ordinal':
       return categoricalColors;
     case 'quantile':
     case 'quantize':
     case 'threshold':
-      return ordinalColors;
+      return ordinalColors;//  离散的 range: 颜色列表
     default:
       return [];
   }
@@ -126,7 +134,7 @@ function inferScaleLabel(type, { field }, { label }) {
 }
 
 function asOrdinalType(name) {
-  if (isPosition(name)) return 'dot';
+  if (isPosition(name)) return 'dot';// 实体的 x y 通道默认 point 比例尺
   return 'ordinal';
 }
 
@@ -138,7 +146,7 @@ function isColor(name) {
   return name === 'fill' || name === 'stroke';
 }
 
-function isOrdinal(values) {
+function isOrdinal(values) { // domin 值有字符串 true false, 就是离散比例尺
   return values.some((v) => {
     const type = typeof v;
     return type === 'string' || type === 'boolean';
@@ -158,7 +166,7 @@ function inferDomainQ(values, { zero = false } = {}) {
   if (definedValues.length === 0) return [];
   const min = Math.min(...definedValues);
   const max = Math.max(...definedValues);
-  return [zero ? 0 : min, max];
+  return [zero ? 0 : min, max];// zero 为 true 时, 把作用域下限固定在 0
 }
 
 function inferDomainC(values) {
@@ -175,6 +183,6 @@ function inferDomainT(values, domain) {
 
 function inferRangeQ(name) {
   if (name === 'y') return [1, 0];
-  if (name === 'color') return [firstOf(ordinalColors), lastOf(ordinalColors)];
+  if (name === 'color') return [firstOf(ordinalColors), lastOf(ordinalColors)];// 666
   return [0, 1];
 }

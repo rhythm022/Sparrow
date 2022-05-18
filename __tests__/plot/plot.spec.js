@@ -442,7 +442,7 @@ describe('plot', () => {
         r: 'value',
       },
       scales: {
-        y: { nice: true, zero: false, type: 'log' },
+        y: { nice: true, zero: false, type: 'log' }, // zero 为 true 时, 把作用域下限固定在 0
         r: {
           range: [3, 20],
           interpolate: (t, a, b) => Math.sqrt(a * a * (1 - t) + b * b * t),
