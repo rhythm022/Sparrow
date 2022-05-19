@@ -60,7 +60,7 @@ export function create(options) {
   if (type === 'binX') return createBinX(rest);
 
   // coordinateOptions
-  if (type === 'cartesian') return cartesian(rest);
+  if (type === 'cartesian') return cartesian(rest);// 用户可传入 cartesian 所需的 transformOptions, 否则使用默认
   if (type === 'transpose') return transpose(rest);
   if (type === 'polar') return polar(rest);
 
@@ -85,7 +85,7 @@ export function create(options) {
   throw new Error(`Unknown node type: ${options.type}`);
 }
 
-function createGuide(guide, options) {
+function createGuide(guide, options) { // 666 // options 闭包
   return (renderer, scale, coordinate) => guide(renderer, scale, coordinate, options);
 }
 

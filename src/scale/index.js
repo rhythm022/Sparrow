@@ -1,5 +1,9 @@
 /*
-    scale 的输入是 domin 里的值, 是某个通道里的值
+
+    scale 是对 geometry 实体的每个通道, 在 domin/range 范围内做一维的伸缩变形
+
+    连续型 scale 有 ticks, 是给 guide 使用.
+
 */
 export { createBand } from './band';
 export { createIdentity } from './identity';

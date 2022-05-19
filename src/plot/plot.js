@@ -89,14 +89,14 @@ function plotView({
   const geometries = geometriesOptions.map(initialize);
 
   const channels = geometries.map((d) => d.channels);
-  // scales // geometry 实体被绘制之前, 会先经过 scale
+  // scales
   const scaleDescriptors = inferScales(channels, scalesOptions);// scaleDescriptors 是以通道组名为 key, 以 scaleDescriptor 为 value 的对象
-  const scales = map(scaleDescriptors, create);// 为每个通道创建 scale 器
+  const scales = map(scaleDescriptors, create);// 为每个通道创建 scale 器 // scale 是对 geometry 实体变形
   // guides
   const guidesDescriptors = inferGuides(scaleDescriptors, { x, y, paddingLeft }, guidesOptions);
-  const guides = map(guidesDescriptors, create);
-  // coordinate
-  const transforms = inferCoordinates(coordinateOptions).map(create);
+  const guides = map(guidesDescriptors, create);// 为 x y color 通道组创建 guide 器
+  // 区域的 transforms
+  const transforms = inferCoordinates(coordinateOptions).map(create);// 坐标系是对画布变形
   const coordinate = createCoordinate({
     x: x + paddingLeft,
     y: y + paddingTop,
@@ -105,13 +105,13 @@ function plotView({
     transforms,
   });
 
-  // 绘制
-  // 绘制辅助组件
+  // 开始绘制
+  // 绘制 guide
   for (const [key, guide] of Object.entries(guides)) {
     const scale = scales[key];
     guide(renderer, scale, coordinate);
   }
-  // 绘制几何元素
+  // 绘制 geometry
   for (const {
     index, geometry, channels, styles,
   } of geometries) {

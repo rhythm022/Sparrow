@@ -15,6 +15,8 @@ import { createOrdinal } from './ordinal';
     bandRange 是列表,列表元素是长度空间的起点坐标
     step 是长度空间的总宽
     step =  band宽(bandWidth) + padding
+
+    传入的 domin 是离散 domin
 */
 function band({
   domain, range, padding, margin = padding,
