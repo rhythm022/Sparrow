@@ -25,12 +25,12 @@ export function legendRamp(renderer, scale, coordinate, {
 
   const legendY = label ? height * 2 : 0;
   const domainValues = [firstOf(domain), lastOf(domain)];
-  const value = createLinear({ domain: [0, width], range: domainValues });// Ramp 的长和 domin 相互映射
+  const value = createLinear({ domain: [0, width], range: domainValues });// 1. 在 domin 范围内的所有数据实体值都占据某一位置
   const position = createLinear({ domain: domainValues, range: [0, width] });
 
   for (let i = 0; i < width; i += 1) {
-    const stroke = scale(value(i));
-    renderer.line({ // 显示 domin 映射到的颜色视觉属性
+    const stroke = scale(value(i));// 2. 在该位置, 该数据实体值对应的 color
+    renderer.line({ // 画出来
       x1: i, y1: legendY, x2: i, y2: legendY + height, stroke,
     });
   }
@@ -42,9 +42,9 @@ export function legendRamp(renderer, scale, coordinate, {
   ] : position.ticks(tickCount);
 
   const ticks = values.map((d) => ({
-    x: position(d), // domin 映射到位置视觉属性
+    x: position(d), // 3. 在其中的特殊位置(即刻度), 该数据实体值
     y: legendY,
-    text: formatter(d), // 显示 domin 的刻度列表
+    text: formatter(d), // 画出来
   }));
   ticksBottom(renderer, ticks, { fontSize, tickLength });
 

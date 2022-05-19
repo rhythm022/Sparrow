@@ -2,7 +2,7 @@ import { createChannel, createChannels } from './channel';
 import { createGeometry } from './geometry';
 import { circle } from './shape';
 import { channelStyles } from './style';
-// point 的 channels (特征)有 x y r stroke fill 五个
+// point 的通道有 x y r stroke fill 五个
 const channels = createChannels({
   r: createChannel({ name: 'r' }),
 });
@@ -12,7 +12,7 @@ const defaults = {
   fill: 'none',
 };
 
-// 对每一个样本使用特征做渲染 ( 调用 circle 做渲染)
+// 对实体通过通道做绘制 ( 调用 circle 做渲染)
 function render(renderer, I, scales, values, directStyles, coordinate) {
   const { r: dr, ...restDefaults } = defaults;
 
@@ -21,10 +21,10 @@ function render(renderer, I, scales, values, directStyles, coordinate) {
   return Array.from(I, (i) => circle(renderer, coordinate, {
     ...restDefaults,
     ...directStyles,
-    ...channelStyles(i, values), // 特征 stroke & fill
-    cx: X[i], // 特征 x
-    cy: Y[i], // 特征 y
-    r: R[i] || dr, // 特征 r
+    ...channelStyles(i, values), // 通道 stroke fill
+    cx: X[i], // 通道 x
+    cy: Y[i], // 通道 y
+    r: R[i] || dr, // 通道 r
   }));
 }
 

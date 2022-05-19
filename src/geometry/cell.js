@@ -5,7 +5,7 @@
 
     这个计算宽高的过程由 band 比例尺实现, 我们传给 band 比例尺的 domin 列表里面有几个元素, 就对应这个方向有几个格子
 
-    我认为这是个奇怪的实现
+    我认为这是个有趣的实现
 */
 
 import { createChannels, createChannel } from './channel';

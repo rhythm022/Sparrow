@@ -39,5 +39,5 @@ export function degree(radian) {
 
 export function unique(points, x = (d) => d[0], y = (d) => d[1]) { // 去重
   const overlap = (a, b) => closeTo(x(a), x(b)) && closeTo(y(a), y(b));
-  return points.filter((d, index) => points.findIndex((p) => overlap(d, p)) === index);// 之前如果有了相同的, 就不用把自己加进去
+  return points.filter((d, index) => points.findIndex((p) => overlap(d, p)) === index);// 666 // 之前如果有了相同的, 就不用把自己加进去
 }

@@ -20,7 +20,7 @@ export function createRenderer(width, height) {
     scale: (...args) => scale(context, ...args),
     rotate: (...args) => rotate(context, ...args),
     translate: (...args) => translate(context, ...args),
-    node: () => context.node, // 下面会讲解
-    group: () => context.group, // 下面会讲解
+    node: () => context.node,
+    group: () => context.group,
   };
 }

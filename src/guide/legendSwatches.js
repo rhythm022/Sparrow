@@ -22,10 +22,10 @@ export function legendSwatches(renderer, scale, coordinate, {
 
   const legendY = label ? swatchSize * 2 : 0;// swatch 的左上点的 y
   for (const [i, t] of Object.entries(domain)) {
-    const color = scale(t);
+    const color = scale(t);// 画出该通道所有数据实体值对应的 color // 离散 domin === 该通道所有数据实体值
     const legendX = width * i;
 
-    renderer.rect({ // 绘制 swatch 显示 domin 映射到的颜色视觉属性
+    renderer.rect({ // 绘制 swatch
       x: legendX,
       y: legendY,
       width: swatchSize,
@@ -35,7 +35,7 @@ export function legendSwatches(renderer, scale, coordinate, {
     });
     const textX = legendX + marginLeft + swatchSize;
     const textY = legendY + swatchSize;
-    renderer.text({ // 显示 domin 的刻度列表
+    renderer.text({
       text: formatter(t), x: textX, y: textY, fill: 'currentColor', fontSize,
     });
   }

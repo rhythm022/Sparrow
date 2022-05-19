@@ -1,9 +1,16 @@
 /*
-    legend 是 颜色 刻度, 表明这个颜色对应的值.
+    guide 用于把
 
-    axis 是 格子 刻度, 表明这个位置对应的值.
+    transform statistic 预处理后的数据实体
 
-    geometry 实体的 x y 通道, 使用 axis. color 通道使用 legend.
+    和 geometry 实体的映射关系(scale)绘制出来.
+
+    每个通道各自有 scale, 就有各自的 guide. x y 通道有 axis guide. color 通道有 legend guide.
+
+    axis 利用刻度表明数据实体值对应的 geometry 位置. legend 利用颜色图例表明数据实体值对应的 geometry 颜色.
+
+    guide 需要涵盖数据实体的整个 domin.
+
 */
 
 export { legendSwatches } from './legendSwatches';

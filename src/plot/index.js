@@ -5,7 +5,6 @@ type SPNode = {
   type?: string;
   data?: any[],
   transforms?: Transform[],
-  //
   encodings?: Recode<ChannelTypes, Encode>,
   statistics?: Statistic[],
   //

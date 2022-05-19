@@ -18,9 +18,9 @@ function render(renderer, I, scales, values, directStyles, coordinate) {
     ...defaults,
     ...directStyles,
     ...groupChannelStyles(I, values),
-    X, // 列表
-    Y, // 列表
-    I, // 列表
+    X, // 向量
+    Y, // 向量
+    I, // 向量
     fill: 'none',
   }));
 }

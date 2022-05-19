@@ -1,6 +1,6 @@
 import { identity, lastOf } from '../utils';
 
-export function createAxis(components) {
+export function createAxis(components) { // axis guide 就是画 ticks
   return (
     renderer,
     scale,
@@ -19,8 +19,7 @@ export function createAxis(components) {
     const fontSize = 10;
     const isOrdinal = !!scale.bandWidth;
     const isQuantitative = !!scale.ticks;
-    // 连续比例尺的 values === domin 的 刻度 (linear/log/time)
-    // 离散比例尺的 values == domin + offset (ordianl/band/point)
+    // axis guide 刻度 values === scale 提供的刻度 | 离散 domin 列表
     const values = isQuantitative ? scale.ticks(tickCount) : domain;
     const offset = isOrdinal ? scale.bandWidth() / 2 : 0;
 
@@ -30,15 +29,15 @@ export function createAxis(components) {
       tickLength, fontSize, center, isOrdinal,
     };
 
-    const { // 什么样的坐标系渲染什么样的坐标轴, 坐标轴包括 grid / ticks / label
+    const { // geometry 与 axis 独立绘制, axis 包括刻度ticks/label/格子grid
       grid: Grid, ticks: Ticks, label: Label, start, end,
     } = components[type];
-    const ticks = values.map((d) => { // d === scale 的 domin 值
-      const [x, y] = coordinate(start(d, scale, offset));// 坐标轴上刻度的绘制位置 [ x, y ] === [coordinate(scale(d)), coordinate(1)]
+    const ticks = values.map((d) => { // d: domin
+      const [x, y] = coordinate(start(d, scale, offset));// 刻度的绘制位置 [ x, y ] === [coordinate(scale(d)), coordinate(1)]
       const text = formatter(d);
       return { x, y, text };
     });
-    const labelTick = (() => { // 坐标轴上 label 的绘制位置
+    const labelTick = (() => { // label 的绘制位置
       if (!isOrdinal) return lastOf(ticks);
       const value = lastOf(values);
       const [x, y] = coordinate(start(value, scale, offset * 2));
