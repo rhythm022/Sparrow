@@ -2,7 +2,13 @@
 
     scale 是对 geometry 实体的每个通道, 在 domin/range 范围内做一维的伸缩变形
 
-    连续型 scale 有 ticks, 是给 guide 使用.
+    拥有连续 domin 的 scale 会有 ticks, 是给 guide 使用. ticks 可以看做是连续 domin 的概要.
+
+    连续到连续: linear.
+    离散到连续: band.
+    连续到离散: quantile/quantize.
+
+    quantile/quantize 是分布比例尺, 通过给数据分组来探索数据的分布.
 
 */
 export { createBand } from './band';

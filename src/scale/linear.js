@@ -9,20 +9,18 @@ export function createLinear({
   interpolate = interpolateNumber,
 }) {
   const scale = (x) => {
-    const t = normalize(x, d0, d1);// 假如 nice 过,以拓展后的新作用域做归一化然后映射值域
+    const t = normalize(x, d0, d1);// 归一化 // 假如拓展(nice)过, 以拓展后的新 domin 做 scale
     return interpolate(t, r0, r1);
   };
-  // 比例尺的 ticks 是 domin 的刻度列表
-  scale.ticks = (tickCount = 10) => ticks(d0, d1, tickCount);// 2. 新作用域的新 tickStep 间隔可能变大
-  scale.nice = (tickCount = 10) => { // nice === 拓展作用域
+  scale.nice = (tickCount = 10) => { // nice: 伸长 domin
     if (d0 === d1) return;
-    // the first time
-    const step = tickStep(d0, d1, tickCount);// 1. 用旧作用域[d0, d1]算出来的旧 tickStep 来确定新作用域[d0, d1]
-    [d0, d1] = nice([d0, d1], {
+    const step = tickStep(d0, d1, tickCount);
+    [d0, d1] = nice([d0, d1], { // 更新 d0 d1 // 1. 用旧 domin 算出来的 step 来伸长 domin
       floor: (x) => floor(x, step),
       ceil: (x) => ceil(x, step),
     });
   };
+  scale.ticks = (tickCount = 10) => ticks(d0, d1, tickCount);// 2. 新 domin 的 step/ticks 变大
 
   return scale;
 }
