@@ -1,51 +1,51 @@
 import {
-  bisect, ticks, identity, group, tickStep, floor, ceil, firstOf, min, max,
+  bisect, ticks, identity, group, tickStep, floor, ceil, firstOf, min, max, map,
 } from '../utils';
 
-// 这里的 values 是实体的特征
-// 根据特征通道中最小最大值, 划分出特征的区间
-function bin(values, count = 10, accessor = identity) { // 比如特征最小值 3 最大值 33
+// bin 接受 values 某通道的值列表, 为该通道生成区间表.
+// 过程与为 domin 生成 ticks 类似.
+function bin(values, count = 10, accessor = identity) { // 比如通道最小值 3 最大值 33
   const minValue = min(values, accessor);
   const maxValue = max(values, accessor);
-  const step = tickStep(minValue, maxValue, count);// step === 2
-  let niceMin = floor(minValue, step);// 使特征作用范围变宽 [ 2, 34 ]
+  const step = tickStep(minValue, maxValue, count);// 原始 step = 2
+  let niceMin = floor(minValue, step);// 伸长通道范围至[ 2, 34 ]
   let niceMax = ceil(maxValue, step);
-  const newStep = tickStep(niceMin, niceMax, count);// 因为作用范围变宽导致区间(step)也变宽了 === 5
-
-  const thresholds = ticks(niceMin, niceMax, count);// 变宽的具体区间 [5, 10, 15, 20, 25, 30]
-  niceMin = floor(niceMin, newStep);// 求出与新区间匹配的特征上下限 0 35
+  const newStep = tickStep(niceMin, niceMax, count);// 通道范围变长导致每个区间长度变长 step = 5
+  const thresholds = ticks(niceMin, niceMax, count);// 具体为 [5, 10, 15, 20, 25, 30]
+  niceMin = floor(niceMin, newStep);// 区间长度变长反过来导致通道范围变长 [ 0, 35 ]
   niceMax = ceil(niceMax, newStep);
 
   return Array.from(new Set([
-    niceMin,
+    niceMin, // 有头有尾
     ...thresholds,
     niceMax,
   ]));
 }
 
+// 根据 x 区间返回组实体 // 比如 x = 26 27 28 29 30 的实体生成一个组实体 (25,30], 和其他组实体一起返回.
 export function createBinX({ count = 10, channel, aggregate = (values) => values.length } = {}) {
   return ({ index, values }) => {
     const {
       x: X, x1, ...rest
-    } = values;// values 是实体的列表
-    const restChannels = Object.keys(rest);
-    const thresholds = bin(X, count);// 选取实体的某个特征, 根据该特征区分实体, 在这里是根据 x 特征划分实体
+    } = values;// 原数据实体
+    const thresholds = bin(X, count);// x 通道的区间表
+    const groups = group(index, (i) => bisect(thresholds, X[i]) - 1); // 组实体到组内实体索引的一对多映射
     const n = thresholds.length;
-    const groups = group(index, (i) => bisect(thresholds, X[i]) - 1); // 666 // 左开右闭比如 (25,30], 实体 x = 28 会被归到 25, x = 30 也被归到 25
-    const I = new Array(n - 1).fill(0).map((_, i) => i);
+    const restChannels = Object.keys(rest);
+    const I = new Array(n - 1).fill(0).map((_, i) => i);// 组实体的索引
 
-    return { // 根据原始实体的特征生成区间实体的特征返回
-      index: I.filter((i) => groups.has(i)), // 有实体的区间
+    return { // 返回组实体
+      index: I.filter((i) => groups.has(i)), // 有效的组实体的索引
       values: Object.fromEntries([
-        ...restChannels.map((channel) => [channel, I.map((i) => { // 比如区间的 y 特征 === 该区间的第一个实体的 y 值
+        ['x', thresholds.slice(0, n - 1)], // 组的区间起点
+        ['x1', thresholds.slice(1, n)], // 组的区间终点
+        ...restChannels.map((channel) => [channel, I.map((i) => { // 组实体的原始通道, 保留了组内第一位实体的通道
           if (!groups.has(i)) return undefined;
           return values[channel][firstOf(groups.get(i))];
         })]),
-        ['x', thresholds.slice(0, n - 1)], // 区间
-        ['x1', thresholds.slice(1, n)],
-        [channel, I.map((i) => { // 新增的该区间的统计信息的通道, 在这里, 统计了每个区间的实体总数
+        [channel, I.map((i) => { // 组的统计通道, 可以自定义. 默认统计组区间的实体量.
           if (!groups.has(i)) return 0;
-          return aggregate(groups.get(i).map((index) => values[index]));
+          return aggregate(groups.get(i).map((index) => map(values, (value) => value[index])));// aggregate 的入参是组内实体列表
         })],
       ]),
     };
