@@ -37,8 +37,6 @@ export function createBinX({ count = 10, channel, aggregate = (values) => values
     return { // 返回组实体
       index: I.filter((i) => groups.has(i)), // 有效的组实体的索引
       values: Object.fromEntries([
-        ['x', thresholds.slice(0, n - 1)], // 组的区间起点
-        ['x1', thresholds.slice(1, n)], // 组的区间终点
         ...restChannels.map((channel) => [channel, I.map((i) => { // 组实体的原始通道, 保留了组内第一位实体的通道
           if (!groups.has(i)) return undefined;
           return values[channel][firstOf(groups.get(i))];
@@ -47,6 +45,8 @@ export function createBinX({ count = 10, channel, aggregate = (values) => values
           if (!groups.has(i)) return 0;
           return aggregate(groups.get(i).map((index) => map(values, (value) => value[index])));// aggregate 的入参是组内实体列表
         })],
+        ['x', thresholds.slice(0, n - 1)], // 组的区间起点
+        ['x1', thresholds.slice(1, n)], // 组的区间终点
       ]),
     };
   };
